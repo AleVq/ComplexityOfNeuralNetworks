@@ -1,9 +1,18 @@
 \documentclass{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[frenchb]{babel}
+\usepackage[frenchb]{babel}  
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
 \usetheme{Warsaw}
 
+\addtobeamertemplate{navigation symbols}{}{%
+	\usebeamerfont{footline}%
+	\usebeamercolor[fg]{footline}%
+	\hspace{1em}%
+	\insertframenumber/\inserttotalframenumber
+}
 \title{Complexity of Neural Networks}
 \author{Vasquez Alessandro}
 \institute{Université Nice-Sophia-Antipolis}
@@ -14,30 +23,153 @@
 
 \begin{frame}
 \frametitle{Preliminaries}
+Neuron's representation:
+$y = \sigma (\sum_{j=1}^{n}w_jx_j - w_0)$ \\
+Transfer functions: 
+\begin{itemize}
+	\item $   
+	sign(x)  = 
+	\begin{cases}
+	0 &\quad\text{if } t < 0\\
+	1 &\quad\text{if } t \geq 0 \\
+	\end{cases}
+	$
+	\item $\sigma (t) = (1+e^{-t})^{-1}$
+	\item $Pr(\sigma_T(t) = 1 ) = (1+e^{-t/T})^{-1} $
+\end{itemize}
+
 \end{frame}
+
+
+\begin{frame}
+\frametitle{Preliminaries}
+Neural nets can be
+\begin{itemize}
+	\item cyclic or acyclic
+	\item symmetric or asymmetric w.r.t. interconnections
+	\item continuous or discrete w.r.t. updates
+	\item synchronous or asynchronous w.r.t. updates in discrete neural nets
+\end{itemize}
+We're going to consider
+\begin{itemize}
+	\item back-propagation nets
+	\item Hopfield nets
+\end{itemize}
+\end{frame}
+
 
 \begin{frame}
 \frametitle{Acyclic nets}
 \framesubtitle{Computational power}
+Parameters
+\begin{itemize}
+	\item size
+	\item depth
+	\item weight
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Acyclic nets}
-\framesubtitle{Synthesis}
+\framesubtitle{Computational power}	
+	\begin{theorem}
+		Any threshold function on $n$ variables can be computed by a thresholdgate with integer weights $w_i$ st: $$|w_i| \leq \frac{(n+1)^{(n+1)/2}}{2^n}, \forall i =0,...,n.$$
+	\end{theorem}
+\end{frame}
+
+\begin{frame}
+\frametitle{Acyclic nets}
+\framesubtitle{Computational power}	
+\begin{theorem}
+For infinitely many $n$, there are threshold functions on $n$ variables whose computation by a single threshold gate requires weights as large as $\frac{n^{n/2}}{2^n}.$
+\end{theorem}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Acyclic nets}
+\framesubtitle{NP-complete problems}
+\begin{definition}[Threshold circuit loading]
+	Given $\{(\vec{x_1}, b_1),...,(\vec{x_m}, b_m)\},$ where each $\vec{x_i} \in \{0,1\}^n$ and each $b_i \in \{0, 1\},$ and a directed acyclic graph, can we find a weight assignment st given $f$ the function computed by the resulting threshold circuit: $f(\vec{x_i})=b_i, \forall i = 1,...,m ?$
+\end{definition}
+\end{frame}
+
+\begin{frame}
+\frametitle{Acyclic nets}
+\framesubtitle{NP-complete problems}
+\begin{definition}[Threshold circuit loading]
+Given $\{(\vec{x_1}, b_1),...,(\vec{x_m}, b_m)\},$ where each $\vec{x_i} \in \{0,1\}^n$ and each $b_i \in \{0, 1\},$ and $K \in \mathbb{N}$, does exists a threshold circuit of at most $K$ neurones st given $f$ the function computed by the resulting threshold circuit: $f(\vec{x_i})=b_i, \forall i = 1,...,m ?$
+\end{definition}
 \end{frame}
 
 \begin{frame}
 \frametitle{Cyclic nets}
 \framesubtitle{Computational power}
+\begin{definition}[Hopfield network]
+Neural net in which
+\begin{itemize}
+	\item all arcs are bidirectional
+	\item each neuron is interconnected to all other neurons
+	\item each neuron has a state
+	\item each neuron's state is updated asynchronously
+	
+\end{itemize}
+\end{definition}
 \end{frame}
 
 \begin{frame}
 \frametitle{Cyclic nets}
-\framesubtitle{Synthesis}
+\framesubtitle{Results}
+\begin{theorem}
+	In a symmetric Hopfield net with $w_{ij}$ integer weights and $n$ neurons, the convergence is obtain in 
+	\[
+	3 \sum_{j<i} |w_{ij}| = O(n^2 \cdot \max_{i,j} |w_{ij}|)
+	\]
+	asynchronous changes of neuron state.
+\end{theorem}
 \end{frame}
 
+\begin{frame}
+	\frametitle{Cyclic nets}
+	\framesubtitle{Results}
+	\begin{definition}[Attraction domain]
+		Let $\vec{x_i}$ be a stable global state for a given Hopfield net. The \textit{attraction domain} \rm of $\vec{x_i}$ is the set of all vectors which are guaranteed to converge to $\vec{x_i}.$
+	\end{definition}
+	\begin{definition}[Attraction radius]
+		The \it attraction radius \rm of $x_i$ is the largest Hamming distance from which all other vectors are guaranteed to converge to $\vec{x_i}^2.$
+	\end{definition}
+\end{frame}
 
+\begin{frame}
+\frametitle{Cyclic nets}
+\framesubtitle{Results}
+\begin{definition}[Hopfield Net Loading Problem]
+	Given a set of vectors $X=\{\vec{x_1}, .., \vec{x_m}\},$ where each $\vec{x_i} \in \{-1,1\}^n,$ and a constant $\rho,$ is there a symmetric net of $n$ neurons that has $X$ as stable states with attraction radii $\geq \rho?$
+\end{definition}
+\end{frame}
 
+\begin{frame}
+\frametitle{Cyclic nets}
+\framesubtitle{NP-complete problems}
+	\begin{itemize}
+		\item Decide if a given symmetric, simple network has more than one stable state.
+		\item Determine if a symmetric simple network converges to a given stable state from any other initial state.
+	\end{itemize}
+\end{frame}
 
+\begin{frame}
+\frametitle{Cyclic nets}
+\framesubtitle{NP-hard problems}
+\begin{itemize}
+	\item Decide if a given asymmetric net under synchronous updates will converge from any (or all) initial state.
+	\item Computeing the attraction radius of a given stable state in a symmetric simple net.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+	Thank you for your attention.
+\end{center}
+\end{frame}
 
 \end{document}
