@@ -6,6 +6,7 @@
 \usepackage{amsthm}
 \usepackage{amsmath}
 \usetheme{Warsaw}
+\usepackage{graphicx}
 
 \addtobeamertemplate{navigation symbols}{}{%
 	\usebeamerfont{footline}%
@@ -20,23 +21,29 @@
 \begin{document}
 
 \frame{\titlepage}
-
 \begin{frame}
 \frametitle{Preliminaries}
-Neuron's representation:
-$y = \sigma (\sum_{j=1}^{n}w_jx_j - w_0)$ \\
-Transfer functions: 
-\begin{itemize}
-	\item $   
-	sign(x)  = 
-	\begin{cases}
-	0 &\quad\text{if } t < 0\\
-	1 &\quad\text{if } t \geq 0 \\
-	\end{cases}
-	$
-	\item $\sigma (t) = (1+e^{-t})^{-1}$
-	\item $Pr(\sigma_T(t) = 1 ) = (1+e^{-t/T})^{-1} $
-\end{itemize}
+\begin{columns}
+	\begin{column}{0.47\textwidth}
+		Neuron's representation:
+		$y = \sigma (\sum_{j=1}^{n}w_jx_j - w_0)$ \\
+		Transfer functions: 
+		\begin{itemize}
+			\item $   
+			sign(t)  = 
+			\begin{cases}
+			0 &\quad\text{if } t \leq 0\\
+			1 &\quad\text{if } t > 0 \\
+			\end{cases}
+			$
+			\item $\sigma (t) = (1+e^{-t})^{-1}$
+			%	\item $Pr(\sigma_T(t) = 1 ) = (1+e^{-t/T})^{-1} $
+		\end{itemize}
+	\end{column}
+	\begin{column}{0.5\textwidth}
+		\includegraphics[width=1.1 \textwidth]{images/neuron.eps}
+	\end{column}
+\end{columns}
 
 \end{frame}
 
@@ -59,32 +66,67 @@ We're going to consider
 
 
 \begin{frame}
-\frametitle{Acyclic nets}
-\framesubtitle{Computational power}
-Parameters
+\frametitle{Preliminaries}
+Type of neurons
+\begin{itemize}
+	\item perceptron (with transfer function)
+	\item threshold gate (with binary valued-input)
+	\item majority gate (all $w=1$, $b=\frac{|X|}{2}$)
+\end{itemize}
+Parameters for evaluating neural nets' complexity
 \begin{itemize}
 	\item size
 	\item depth
 	\item weight
 \end{itemize}
+\begin{definition}[Threshold function]
+	A boolean function $t: \{0,1\} \to {0,1} $ is a \textit{threshold function} if it is computable by a linear threshold unit.
+\end{definition}
 \end{frame}
 
 \begin{frame}
 \frametitle{Acyclic nets}
-\framesubtitle{Computational power}	
+\framesubtitle{Weights and computational power}	
 	\begin{theorem}
-		Any threshold function on $n$ variables can be computed by a thresholdgate with integer weights $w_i$ st: $$|w_i| \leq \frac{(n+1)^{(n+1)/2}}{2^n}, \forall i =0,...,n.$$
+		Any threshold function on $n$ variables can be computed by a threshold gate with integer weights $w_i$ st: $$|w_i| \leq \frac{(n+1)^{(n+1)/2}}{2^n}, \forall i =0,...,n.$$
 	\end{theorem}
+	This theorem defines a class of threshold gates of polynomially bounded weights.
 \end{frame}
 
 \begin{frame}
 \frametitle{Acyclic nets}
-\framesubtitle{Computational power}	
+\framesubtitle{Weights and computational power}	
 \begin{theorem}
 For infinitely many $n$, there are threshold functions on $n$ variables whose computation by a single threshold gate requires weights as large as $\frac{n^{n/2}}{2^n}.$
 \end{theorem}
+These threshold gates have not polynomially bounded gates which, on the other hand, are representable by  $O(s \log{s})$ bits.
 \end{frame}
 
+\begin{frame}
+\frametitle{Circuit Classes}
+\framesubtitle{Definitions}	
+	\begin{definition}[Complexity classes]
+		We define five class of functions computable by specifically structured circuits.
+		\begin{itemize}
+			\item $NC^k: $ polynomial-size circuits of depth $ O(\log ^{k}(n)),$ using bounded fan-in AND, OR, and NOT gates.
+			\item $AC^k: $ polynomial-size circuits of depth $ O(\log ^{k}(n)),$ using unbounded AND, OR, and NOT gates.
+			\item $TC^k: $ threshold circuits of polynomial size and depth $O(log^k n),$
+			\item $TC_d^0$ threshold circuits of polynomial size and depth $d,$
+			\item $\widehat{TC}_d^0$ majority circuits of polynomial size and depth $d.$
+		\end{itemize}
+	\end{definition}
+\end{frame}
+\begin{frame}
+	\frametitle{Circuit classes}
+	\framesubtitle{Results}
+	\begin{theorem}[Complexity classes' hierarchy]
+		$$ AC^k \subseteq TC^k \subseteq NC^{k+1}. $$
+		\[
+			\widehat{TC}_d^0 \subseteq TC_d^0 \subseteq \widehat{TC}_{d+1}^0.
+		\]
+	\end{theorem}
+We only know that $AC^0 \subset TC^0,$ e.g. because of the majority function, and $TC^0_1 \subset \widehat{TC^0_2}$ for the parity function.
+\end{frame}
 
 \begin{frame}
 \frametitle{Acyclic nets}
@@ -97,9 +139,9 @@ For infinitely many $n$, there are threshold functions on $n$ variables whose co
 \begin{frame}
 \frametitle{Acyclic nets}
 \framesubtitle{NP-complete problems}
-\begin{definition}[Threshold circuit loading]
-Given $\{(\vec{x_1}, b_1),...,(\vec{x_m}, b_m)\},$ where each $\vec{x_i} \in \{0,1\}^n$ and each $b_i \in \{0, 1\},$ and $K \in \mathbb{N}$, does exists a threshold circuit of at most $K$ neurones st given $f$ the function computed by the resulting threshold circuit: $f(\vec{x_i})=b_i, \forall i = 1,...,m ?$
-\end{definition}
+	\begin{definition}[Threshold circuit minimization]
+	Given $\{(\vec{x_1}, b_1),...,(\vec{x_m}, b_m)\},$ where each $\vec{x_i} \in \{0,1\}^n$ and each $b_i \in \{0, 1\},$ and $K \in \mathbb{N}$, does exists a threshold circuit of at most $K$ neurones st given $f$ the function computed by the resulting threshold circuit: $f(\vec{x_i})=b_i, \forall i = 1,...,m ?$
+	\end{definition}
 \end{frame}
 
 \begin{frame}
@@ -112,7 +154,7 @@ Neural net in which
 	\item each neuron is interconnected to all other neurons
 	\item each neuron has a state
 	\item each neuron's state is updated asynchronously
-	
+	\item each state has an "energy function" assigned: \[E=-\frac{1}{2}\sum_{i,j}w_{ij}s_is_j-\sum_iby_is_i \]
 \end{itemize}
 \end{definition}
 \end{frame}
@@ -125,28 +167,21 @@ Neural net in which
 	\[
 	3 \sum_{j<i} |w_{ij}| = O(n^2 \cdot \max_{i,j} |w_{ij}|)
 	\]
-	asynchronous changes of neuron state.
+	asynchronous changes of neuron states.
 \end{theorem}
 \end{frame}
 
 \begin{frame}
 	\frametitle{Cyclic nets}
-	\framesubtitle{Results}
+	\framesubtitle{Definitions}
 	\begin{definition}[Attraction domain]
 		Let $\vec{x_i}$ be a stable global state for a given Hopfield net. The \textit{attraction domain} \rm of $\vec{x_i}$ is the set of all vectors which are guaranteed to converge to $\vec{x_i}.$
 	\end{definition}
 	\begin{definition}[Attraction radius]
-		The \it attraction radius \rm of $x_i$ is the largest Hamming distance from which all other vectors are guaranteed to converge to $\vec{x_i}^2.$
+		The \it attraction radius \rm of $x_i$ is the largest Hamming distance from which all other vectors are guaranteed to converge to $\vec{x_i}.$
 	\end{definition}
 \end{frame}
 
-\begin{frame}
-\frametitle{Cyclic nets}
-\framesubtitle{Results}
-\begin{definition}[Hopfield Net Loading Problem]
-	Given a set of vectors $X=\{\vec{x_1}, .., \vec{x_m}\},$ where each $\vec{x_i} \in \{-1,1\}^n,$ and a constant $\rho,$ is there a symmetric net of $n$ neurons that has $X$ as stable states with attraction radii $\geq \rho?$
-\end{definition}
-\end{frame}
 
 \begin{frame}
 \frametitle{Cyclic nets}
@@ -162,10 +197,25 @@ Neural net in which
 \framesubtitle{NP-hard problems}
 \begin{itemize}
 	\item Decide if a given asymmetric net under synchronous updates will converge from any (or all) initial state.
-	\item Computeing the attraction radius of a given stable state in a symmetric simple net.
+	\item Computing the attraction radius of a given stable state in a symmetric simple net.
 \end{itemize}
 \end{frame}
 
+\begin{frame}
+\frametitle{Open problems}
+\begin{definition}[Hopfield Net Loading Problem]
+	Given a set of vectors $X=\{\vec{x_1}, .., \vec{x_m}\},$ where each $\vec{x_i} \in \{-1,1\}^n,$ and a constant $\rho,$ is there a symmetric net of $n$ neurons that has $X$ as stable states with attraction radii $\geq \rho?$
+\end{definition}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Open problems}
+The following questions are yet to be answered.
+\begin{itemize}
+	\item Is the Hopfield Net Loading Problem in $P$ or in $NP$?
+	\item Are the separations $TC_d^0 \subseteq TC_{d+1}^0, \forall d\geq2$ proper ? 
+\end{itemize}
+\end{frame}
 \begin{frame}
 \begin{center}
 	Thank you for your attention.
