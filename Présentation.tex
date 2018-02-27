@@ -7,6 +7,7 @@
 \usepackage{amsmath}
 \usetheme{Warsaw}
 \usepackage{graphicx}
+\usepackage{ragged2e}
 
 \addtobeamertemplate{navigation symbols}{}{%
 	\usebeamerfont{footline}%
@@ -41,7 +42,7 @@
 		\end{itemize}
 	\end{column}
 	\begin{column}{0.5\textwidth}
-		\includegraphics[width=1.1 \textwidth]{images/neuron.eps}
+		\includegraphics[width=\textwidth]{images/neuron.eps}
 	\end{column}
 \end{columns}
 
@@ -57,11 +58,6 @@ Neural nets can be
 	\item continuous or discrete w.r.t. updates
 	\item synchronous or asynchronous w.r.t. updates in discrete neural nets
 \end{itemize}
-We're going to consider
-\begin{itemize}
-	\item back-propagation nets
-	\item Hopfield nets
-\end{itemize}
 \end{frame}
 
 
@@ -73,43 +69,59 @@ Type of neurons
 	\item threshold gate (with binary valued-input)
 	\item majority gate (all $w=1$, $b=\frac{|X|}{2}$)
 \end{itemize}
+\begin{definition}[Threshold function]
+	\justify
+	A boolean function $t: \{0,1\} \to \{0,1\} $ is a \textit{threshold function} if it is computable by a linear threshold unit.
+\end{definition}
+\end{frame}
+
+\begin{frame}{Preliminaries}
+
 Parameters for evaluating neural nets' complexity
 \begin{itemize}
 	\item size
 	\item depth
 	\item weight
 \end{itemize}
-\begin{definition}[Threshold function]
-	A boolean function $t: \{0,1\} \to {0,1} $ is a \textit{threshold function} if it is computable by a linear threshold unit.
-\end{definition}
+We're going to consider
+\begin{itemize}
+\item threshold gates-circuits
+\item Hopfield nets
+\end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Acyclic nets}
 \framesubtitle{Weights and computational power}	
 	\begin{theorem}
+		\justify
 		Any threshold function on $n$ variables can be computed by a threshold gate with integer weights $w_i$ st: $$|w_i| \leq \frac{(n+1)^{(n+1)/2}}{2^n}, \forall i =0,...,n.$$
 	\end{theorem}
-	This theorem defines a class of threshold gates of polynomially bounded weights.
 \end{frame}
 
 \begin{frame}
+\justify
 \frametitle{Acyclic nets}
 \framesubtitle{Weights and computational power}	
 \begin{theorem}
+	\justify
 For infinitely many $n$, there are threshold functions on $n$ variables whose computation by a single threshold gate requires weights as large as $\frac{n^{n/2}}{2^n}.$
 \end{theorem}
-These threshold gates have not polynomially bounded gates which, on the other hand, are representable by  $O(s \log{s})$ bits.
+These theorems imply that there is a class of threshold gates of polynomially bounded weights. But even in the case of non-polynomially bounded weights, it's been proved that these can be represented in $O(s \log{s})$ bits.
 \end{frame}
 
 \begin{frame}
+\justify
 \frametitle{Circuit Classes}
 \framesubtitle{Definitions}	
+	\justify
+	Let's consider acyclic networks which compute a boolean function $f: \{0,1\}^n \to \{0,1\}.$
 	\begin{definition}[Complexity classes]
-		We define five class of functions computable by specifically structured circuits.
+		\justify
+		We define five class of functions computable by different classes of circuits.
 		\begin{itemize}
-			\item $NC^k: $ polynomial-size circuits of depth $ O(\log ^{k}(n)),$ using bounded fan-in AND, OR, and NOT gates.
-			\item $AC^k: $ polynomial-size circuits of depth $ O(\log ^{k}(n)),$ using unbounded AND, OR, and NOT gates.
+			\item $NC^k: $ polynomial-size circuits of depth $ O(\log ^{k}(n)),$ using bounded fan-in AND, OR, and NOT gates,
+			\item $AC^k: $ polynomial-size circuits of depth $ O(\log ^{k}(n)),$ using unbounded AND, OR, and NOT gates,
 			\item $TC^k: $ threshold circuits of polynomial size and depth $O(log^k n),$
 			\item $TC_d^0$ threshold circuits of polynomial size and depth $d,$
 			\item $\widehat{TC}_d^0$ majority circuits of polynomial size and depth $d.$
@@ -117,6 +129,7 @@ These threshold gates have not polynomially bounded gates which, on the other ha
 	\end{definition}
 \end{frame}
 \begin{frame}
+\justify
 	\frametitle{Circuit classes}
 	\framesubtitle{Results}
 	\begin{theorem}[Complexity classes' hierarchy]
@@ -130,42 +143,91 @@ We only know that $AC^0 \subset TC^0,$ e.g. because of the majority function, an
 
 \begin{frame}
 \frametitle{Acyclic nets}
-\framesubtitle{NP-complete problems}
+\framesubtitle{Results}
+The following problems are proved to be NP-complete.
 \begin{definition}[Threshold circuit loading]
+	\justify
 	Given $\{(\vec{x_1}, b_1),...,(\vec{x_m}, b_m)\},$ where each $\vec{x_i} \in \{0,1\}^n$ and each $b_i \in \{0, 1\},$ and a directed acyclic graph, can we find a weight assignment st given $f$ the function computed by the resulting threshold circuit: $f(\vec{x_i})=b_i, \forall i = 1,...,m ?$
 \end{definition}
-\end{frame}
 
-\begin{frame}
-\frametitle{Acyclic nets}
-\framesubtitle{NP-complete problems}
-	\begin{definition}[Threshold circuit minimization]
+\begin{definition}[Threshold circuit minimization]
+	\justify
 	Given $\{(\vec{x_1}, b_1),...,(\vec{x_m}, b_m)\},$ where each $\vec{x_i} \in \{0,1\}^n$ and each $b_i \in \{0, 1\},$ and $K \in \mathbb{N}$, does exists a threshold circuit of at most $K$ neurones st given $f$ the function computed by the resulting threshold circuit: $f(\vec{x_i})=b_i, \forall i = 1,...,m ?$
-	\end{definition}
+\end{definition}
 \end{frame}
 
 \begin{frame}
 \frametitle{Cyclic nets}
-\framesubtitle{Computational power}
+\framesubtitle{Hopfield Networks}
 \begin{definition}[Hopfield network]
 Neural net in which
 \begin{itemize}
-	\item all arcs are bidirectional
-	\item each neuron is interconnected to all other neurons
-	\item each neuron has a state
+	\item the weights $w_{ij}$ are symmetric
+	\item the net has a vector $I$ which represents its global state
+	\item each neuron $i$ has a local state $I_i$, where $I$ is the states' vector
 	\item each neuron's state is updated asynchronously
-	\item each state has an "energy function" assigned: \[E=-\frac{1}{2}\sum_{i,j}w_{ij}s_is_j-\sum_iby_is_i \]
+	\item there's an "energy function" assigned to the network
 \end{itemize}
 \end{definition}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Hopfield Networks}
+	The energy function is
+	\[E=-\frac{1}{2}\sum_{i,j}w_{ij}s_is_j-\sum_iI_is_i \]
+	If we derivate the energy function w.r.t. each $s_i$ and changing its sign we get
+	\[
+		\frac{\partial E}{\partial s_i} = I_i + \sum_{j}s_jw_{ij}, 
+	\]
+	for each neuron $i.$
+\end{frame}
+
+\begin{frame}{Hopfield Networks}
+	If we consider the state of a neuron as its bias, we get
+		\[
+			\frac{\partial E}{\partial s_i} = b_i + \sum_{j}s_jw_{ij},
+		\]
+		which is the binary threshold decision rule computed locally by each neuron.
+		In 1982 Hopfield proved that $E$ is a Lyapunov function. 
+\end{frame}
+
+\begin{frame}{Hopfield Network - Example}
+	\includegraphics[width=.8\textwidth]{images/NN/Hopfieldnet.eps}
+\end{frame}
+
+\begin{frame}{Hopfield Network - Example}
+\includegraphics[width=.8\textwidth]{images/NN/Hopfieldnet2.eps}
+\end{frame}
+\begin{frame}{Hopfield Network - Example}
+\includegraphics[width=.8\textwidth]{images/NN/Hopfieldnet3.eps}
+\end{frame}
+\begin{frame}{Hopfield Network - Example}
+\includegraphics[width=.8\textwidth]{images/NN/Hopfieldnet4.eps}
+\end{frame}
+\begin{frame}{Hopfield Network - Example}
+\includegraphics[width=.8\textwidth]{images/NN/Hopfieldnet41.eps}
+\end{frame}
+\begin{frame}{Hopfield Network - Example}
+\includegraphics[width=.8\textwidth]{images/NN/Hopfieldnet5.eps}
+\end{frame}
+
+\begin{frame}{Storage Rule}
+\justify
+	\begin{definition}[Storage Rule]
+		\justify
+		An algorithm which starts by a set of  vectors $\vec{X}=\{\vec{x_1},..,\vec{x_n}\}$ and builds an Hopfield net s.t. its stable state are those vector its called a \textit{storage rule.}
+	\end{definition}
+	Hopfield himself thought of its nets as an implementation of the \textit{associative memory}.
 \end{frame}
 
 \begin{frame}
 \frametitle{Cyclic nets}
 \framesubtitle{Results}
 \begin{theorem}
+	\justify
 	In a symmetric Hopfield net with $w_{ij}$ integer weights and $n$ neurons, the convergence is obtain in 
 	\[
-	3 \sum_{j<i} |w_{ij}| = O(n^2 \cdot \max_{i,j} |w_{ij}|)
+	O(n^2 \cdot \max_{i,j} |w_{ij}|)
 	\]
 	asynchronous changes of neuron states.
 \end{theorem}
@@ -175,17 +237,28 @@ Neural net in which
 	\frametitle{Cyclic nets}
 	\framesubtitle{Definitions}
 	\begin{definition}[Attraction domain]
-		Let $\vec{x_i}$ be a stable global state for a given Hopfield net. The \textit{attraction domain} \rm of $\vec{x_i}$ is the set of all vectors which are guaranteed to converge to $\vec{x_i}.$
+		\justify
+		Let $\vec{x_i}$ be a stable global state for a given Hopfield net. The \textit{attraction domain} of $\vec{x_i}$ is the set of all vectors which are guaranteed to converge to $\vec{x_i}.$
 	\end{definition}
 	\begin{definition}[Attraction radius]
-		The \it attraction radius \rm of $x_i$ is the largest Hamming distance from which all other vectors are guaranteed to converge to $\vec{x_i}.$
+		\justify
+		The \textit{attraction radius} of $x_i$ is the largest Hamming distance from which all other vectors are guaranteed to converge to $\vec{x_i}.$ The attraction radius determines the basin of attraction.
 	\end{definition}
 \end{frame}
 
+\begin{frame}{Local vs global minimum}
+\includegraphics[width=1\textwidth]{images/Energy_landscape.png}
+	
+\end{frame}
+
+\begin{frame}{Oscillating synchronous update}
+\includegraphics[width=.8\textwidth]{images/NN/Hopfieldnet6.eps}
+\end{frame}
 
 \begin{frame}
 \frametitle{Cyclic nets}
 \framesubtitle{NP-complete problems}
+\justify
 	\begin{itemize}
 		\item Decide if a given symmetric, simple network has more than one stable state.
 		\item Determine if a symmetric simple network converges to a given stable state from any other initial state.
@@ -195,6 +268,7 @@ Neural net in which
 \begin{frame}
 \frametitle{Cyclic nets}
 \framesubtitle{NP-hard problems}
+\justify
 \begin{itemize}
 	\item Decide if a given asymmetric net under synchronous updates will converge from any (or all) initial state.
 	\item Computing the attraction radius of a given stable state in a symmetric simple net.
@@ -204,6 +278,7 @@ Neural net in which
 \begin{frame}
 \frametitle{Open problems}
 \begin{definition}[Hopfield Net Loading Problem]
+	\justify
 	Given a set of vectors $X=\{\vec{x_1}, .., \vec{x_m}\},$ where each $\vec{x_i} \in \{-1,1\}^n,$ and a constant $\rho,$ is there a symmetric net of $n$ neurons that has $X$ as stable states with attraction radii $\geq \rho?$
 \end{definition}
 \end{frame}
@@ -214,6 +289,7 @@ The following questions are yet to be answered.
 \begin{itemize}
 	\item Is the Hopfield Net Loading Problem in $P$ or in $NP$?
 	\item Are the separations $TC_d^0 \subseteq TC_{d+1}^0, \forall d\geq2$ proper ? 
+	\item Does exist a $d$ s.t. $AC^0 \subseteq TC_d^0, $ i.e. does exists a class of $d-$depth majority circuits which can compute all functions computed by a depth 1, unbounded, AND-OR-NOT circuit ?
 \end{itemize}
 \end{frame}
 \begin{frame}
